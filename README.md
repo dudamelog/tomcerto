@@ -1,5 +1,7 @@
 # TomCerto (nome provisório)
 
+**Feito por Natalia Clavijo e Maria Eduarda**
+
 Site brasileiro de tradução de tom de base entre marcas — inspirado no [Findation.com](https://findation.com): a pessoa informa os tons de base que já usa e que combinam com sua pele, e o site indica o tom equivalente em outras marcas. TomCerto adapta essa ideia para o mercado nacional (marcas vendidas no Brasil, preços em real, onde comprar aqui), acrescentando subtom, textura, avaliações da comunidade e comparador de produtos.
 
 > **Nome provisório.** "TomCerto" ainda não foi travado como nome definitivo do projeto — é o nome usado desde o rascunho inicial e mantido por consistência no código.
