@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>TomCerto — Os 4 pilares de POO</title>
+<style>
+  :root {
+    --cor-fundo: #FAF6EF;
+    --cor-superficie: #FFFFFF;
+    --cor-superficie-alt: #F3ECDF;
+    --cor-borda: #E4D9C4;
+    --cor-texto: #2B2620;
+    --cor-texto-suave: #7A6F5E;
+    --cor-dourado: #B8935B;
+    --cor-dourado-escuro: #8C6B3E;
+    --cor-sucesso: #6B8F71;
+    --cor-erro: #B4553F;
+    --fonte-titulo: Georgia, 'Times New Roman', serif;
+    --fonte-corpo: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --fonte-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    font-family: var(--fonte-corpo);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ---------- Palco de slides ---------- */
+
+  .palco {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 4.5rem) clamp(1.5rem, 6vw, 7rem);
+    padding-bottom: clamp(4.5rem, 8vh, 6rem);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    overflow-y: auto;
+  }
+
+  .slide.ativo {
+    display: flex;
+    opacity: 1;
+  }
+
+  .slide-rotulo {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    color: var(--cor-dourado-escuro);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .slide h1 {
+    font-family: var(--fonte-titulo);
+    font-weight: normal;
+    font-size: clamp(2rem, 4.2vw, 3.4rem);
+    margin: 0 0 0.6rem;
+    letter-spacing: 0.005em;
+  }
+
+  .slide h2.subtitulo {
+    font-family: var(--fonte-corpo);
+    font-weight: 400;
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    color: var(--cor-texto-suave);
+    margin: 0 0 1.8rem;
+  }
+
+  .slide p.explicacao {
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    color: var(--cor-texto);
+    max-width: 60ch;
+    margin: 0 0 1.6rem;
+  }
+
+  .slide ul.bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    max-width: 70ch;
+  }
+
+  .slide ul.bullets li {
+    position: relative;
+    padding-left: 1.7rem;
+    margin-bottom: 1.1rem;
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+  }
+
+  .slide ul.bullets li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cor-dourado);
+  }
+
+  .slide ul.bullets li strong {
+    color: var(--cor-dourado-escuro);
+  }
+
+  /* ---------- Capa ---------- */
+
+  .capa {
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+  }
+
+  .capa .marca {
+    font-family: var(--fonte-titulo);
+    font-size: clamp(3rem, 8vw, 6rem);
+    letter-spacing: 0.01em;
+    margin: 0;
+    color: var(--cor-texto);
+  }
+
+  .capa .marca span {
+    color: var(--cor-dourado);
+  }
+
+  .capa .linha-dourada {
+    width: 90px;
+    height: 3px;
+    background: var(--cor-dourado);
+    margin: 1.4rem 0 1.6rem;
+    border-radius: 2px;
+  }
+
+  .capa .subtitulo-capa {
+    font-size: clamp(1.15rem, 2.2vw, 1.7rem);
+    color: var(--cor-texto-suave);
+    margin: 0 0 2.6rem;
+    max-width: 45ch;
+  }
+
+  .capa .rodape-capa {
+    font-size: 1rem;
+    color: var(--cor-texto-suave);
+  }
+
+  .capa .rodape-capa strong {
+    color: var(--cor-texto);
+    font-weight: 600;
+  }
+
+  .capa .rodape-capa .linha {
+    margin-bottom: 0.3rem;
+  }
+
+  /* ---------- Grade de código lado a lado ---------- */
+
+  .grade-codigo {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+    width: 100%;
+    max-width: 1400px;
+  }
+
+  @media (max-width: 980px) {
+    .grade-codigo { grid-template-columns: 1fr; }
+  }
+
+  .bloco-codigo {
+    background: #2B2620;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(43, 38, 32, 0.12);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .bloco-codigo .cabecalho-codigo {
+    background: #221D18;
+    color: #D8C9A8;
+    font-family: var(--fonte-mono);
+    font-size: 0.78rem;
+    padding: 0.5rem 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid rgba(184, 147, 91, 0.25);
+  }
+
+  .bloco-codigo .cabecalho-codigo .ponto {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--cor-dourado);
+    opacity: 0.7;
+  }
+
+  .bloco-codigo pre {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    font-family: var(--fonte-mono);
+    font-size: clamp(0.66rem, 0.95vw, 0.83rem);
+    line-height: 1.55;
+    color: #F1E9D8;
+    flex: 1;
+  }
+
+  .bloco-codigo code { white-space: pre; }
+
+  .tok-kw { color: var(--cor-dourado); font-weight: 600; }
+  .tok-str { color: #A8C0A0; }
+  .tok-com { color: #8C826F; font-style: italic; }
+  .tok-type { color: #C9A876; }
+  .tok-num { color: #C08E6B; }
+
+  /* ---------- Diagrama de domínio ---------- */
+
+  .diagrama {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .caixa-classe {
+    background: var(--cor-superficie);
+    border: 1.5px solid var(--cor-borda);
+    border-radius: 10px;
+    padding: 1rem 1.3rem;
+    box-shadow: 0 2px 10px rgba(43, 38, 32, 0.05);
+  }
+
+  .caixa-classe.abstrata {
+    border-color: var(--cor-dourado);
+    background: var(--cor-superficie-alt);
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .caixa-classe h3 {
+    margin: 0 0 0.4rem;
+    font-family: var(--fonte-titulo);
+    font-size: 1.2rem;
+    color: var(--cor-texto);
+  }
+
+  .caixa-classe .etiqueta {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cor-dourado-escuro);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+
+  .caixa-classe ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 0.82rem;
+    color: var(--cor-texto-suave);
+    font-family: var(--fonte-mono);
+  }
+
+  .caixa-classe ul li { margin-bottom: 0.15rem; }
+
+  .linhas-heranca {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 0.4rem 0;
+  }
+
+  .linhas-heranca svg { width: 100%; max-width: 700px; height: 46px; }
+
+  .subclasses-grade {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
+  }
+
+  @media (max-width: 900px) {
+    .subclasses-grade { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Fórmula ---------- */
+
+  .caixa-formula {
+    background: var(--cor-superficie-alt);
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    padding: 1.4rem 1.6rem;
+    font-family: var(--fonte-mono);
+    font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+    color: var(--cor-texto);
+    max-width: 720px;
+    white-space: pre-wrap;
+    line-height: 1.7;
+  }
+
+  .tabela-penalidade {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.4rem;
+    flex-wrap: wrap;
+  }
+
+  .chip-penalidade {
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.92rem;
+  }
+
+  .chip-penalidade strong {
+    display: block;
+    color: var(--cor-dourado-escuro);
+    font-family: var(--fonte-titulo);
+    font-size: 1.1rem;
+  }
+
+  /* ---------- Slide de execução ao vivo ---------- */
+
+  .painel-execucao {
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .botoes-execucao {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+  }
+
+  .botao-executar {
+    background: var(--cor-superficie);
+    border: 1.5px solid var(--cor-dourado);
+    color: var(--cor-dourado-escuro);
+    font-family: var(--fonte-corpo);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.65rem 1.3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+
+  .botao-executar:hover { background: var(--cor-dourado); color: #FFFFFF; }
+  .botao-executar:active { transform: translateY(1px); }
+
+  .botao-executar.destaque {
+    background: var(--cor-dourado-escuro);
+    color: #FFFFFF;
+    border-color: var(--cor-dourado-escuro);
+  }
+
+  .botao-executar.destaque:hover { background: var(--cor-dourado); border-color: var(--cor-dourado); }
+
+  .botao-executar:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .status-execucao {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.8rem;
+    font-size: 0.88rem;
+    color: var(--cor-texto-suave);
+    min-height: 1.4rem;
+    align-items: center;
+  }
+
+  .pilula {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .pilula.ok { background: rgba(107, 143, 113, 0.15); color: var(--cor-sucesso); }
+  .pilula.falha { background: rgba(180, 85, 63, 0.15); color: var(--cor-erro); }
+
+  .terminal {
+    background: #2B2620;
+    color: #EFE6D2;
+    font-family: var(--fonte-mono);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    height: min(42vh, 400px);
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-shadow: 0 4px 18px rgba(43, 38, 32, 0.12);
+  }
+
+  .terminal .aviso-offline {
+    color: #E0C9A6;
+  }
+
+  .terminal .bloco-resultado {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed rgba(216, 201, 168, 0.25);
+  }
+
+  .terminal .bloco-resultado:last-child {
+    border-bottom: none;
+  }
+
+  .terminal .titulo-resultado {
+    color: var(--cor-dourado);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  /* ---------- Rodapé de navegação ---------- */
+
+  .rodape-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.9rem 1.6rem;
+    padding-bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to top, var(--cor-fundo) 60%, rgba(250, 246, 239, 0));
+    z-index: 10;
+  }
+
+  .botao-nav {
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    color: var(--cor-texto);
+    font-family: var(--fonte-corpo);
+    font-size: 0.9rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(43, 38, 32, 0.06);
+  }
+
+  .botao-nav:hover { border-color: var(--cor-dourado); color: var(--cor-dourado-escuro); }
+
+  .botao-nav:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .contador-slide {
+    font-family: var(--fonte-mono);
+    font-size: 0.85rem;
+    color: var(--cor-texto-suave);
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Colunas 50/50 ---------- */
+
+  .duas-colunas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .duas-colunas { grid-template-columns: 1fr; }
+  }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="palco" id="palco">
+
+  <!-- 1. CAPA -->
+  <section class="slide ativo capa">
+    <p class="marca">Tom<span>Certo</span></p>
+    <div class="linha-dourada"></div>
+    <p class="subtitulo-capa">Os 4 pilares de POO em 3 linguagens</p>
+    <div class="rodape-capa">
+      <p class="linha"><strong>Eduarda &amp; Natalia</strong></p>
+      <p class="linha">Paradigmas de Linguagens de Programação</p>
+      <p class="linha">Segunda-feira, 21 de setembro</p>
+    </div>
+  </section>
+
+  <!-- 2. CONTEXTO -->
+  <section class="slide">
+    <p class="slide-rotulo">Contexto</p>
+    <h1>Por que um shade-matcher de bases?</h1>
+    <ul class="bullets">
+      <li><strong>O problema:</strong> cada marca numera os tons de base de um jeito diferente — o que é "NC30" na Boticário não é o mesmo tom em outra marca, e a pessoa compradora não tem como saber sem testar.</li>
+      <li><strong>A ideia:</strong> o TomCerto é um "tradutor" de tom entre marcas, inspirado no Findation.com, adaptado para marcas e formatos vendidos no Brasil (líquida, cushion, mousse).</li>
+      <li><strong>Por que POO aqui:</strong> este não é código descartável para a entrega — o modelo de domínio (<code style="font-family:var(--fonte-mono)">Produto</code>, subclasses, cálculo de compatibilidade) vira a base real do backend do produto depois do curso.</li>
+    </ul>
+  </section>
+
+  <!-- 3. MODELO DE DOMÍNIO -->
+  <section class="slide">
+    <p class="slide-rotulo">Modelo de domínio</p>
+    <h1>Produto e suas 3 tecnologias de base</h1>
+    <div class="diagrama">
+      <div class="caixa-classe abstrata">
+        <span class="etiqueta">Classe abstrata</span>
+        <h3>Produto</h3>
+        <ul>
+          <li>marca, nome, preço</li>
+          <li>tom, subtom, acabamento</li>
+          <li>calcularScoreBase()</li>
+          <li>calcularCompatibilidade() — abstrato</li>
+        </ul>
+      </div>
+      <div class="linhas-heranca">
+        <svg viewBox="0 0 700 46" preserveAspectRatio="none">
+          <line x1="350" y1="0" x2="350" y2="16" stroke="#B8935B" stroke-width="2"/>
+          <line x1="90" y1="16" x2="610" y2="16" stroke="#B8935B" stroke-width="2"/>
+          <line x1="90" y1="16" x2="90" y2="40" stroke="#B8935B" stroke-width="2"/>
+          <line x1="350" y1="16" x2="350" y2="40" stroke="#B8935B" stroke-width="2"/>
+          <line x1="610" y1="16" x2="610" y2="40" stroke="#B8935B" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="subclasses-grade">
+        <div class="caixa-classe">
+          <span class="etiqueta">extends Produto</span>
+          <h3>BaseLiquida</h3>
+          <ul>
+            <li>fps</li>
+            <li>penalidade acabamento = 5</li>
+          </ul>
+        </div>
+        <div class="caixa-classe">
+          <span class="etiqueta">extends Produto</span>
+          <h3>BaseMousse</h3>
+          <ul>
+            <li>percentualAeracao</li>
+            <li>penalidade acabamento = 10</li>
+          </ul>
+        </div>
+        <div class="caixa-classe">
+          <span class="etiqueta">extends Produto</span>
+          <h3>BaseCushion</h3>
+          <ul>
+            <li>numeroEsponjas</li>
+            <li>penalidade acabamento = 15</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ABSTRAÇÃO -->
+  <section class="slide">
+    <p class="slide-rotulo">Pilar 1 de 4</p>
+    <h1>Abstração</h1>
+    <h2 class="subtitulo">Produto é uma classe abstrata: não existe uma "base genérica" no catálogo, só líquida, cushion e mousse — cada subclasse é obrigada a implementar <code style="font-family:var(--fonte-mono)">calcularCompatibilidade</code>.</h2>
+    <div class="grade-codigo">
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>produto.py</div>
+        <pre><code><span class="tok-kw">class</span> <span class="tok-type">Produto</span>(<span class="tok-type">ABC</span>):
+    <span class="tok-str">"""Classe abstrata que representa
+    um produto de maquiagem com tom."""</span>
+
+    <span class="tok-com"># ... atributos encapsulados ...</span>
+
+    <span class="tok-kw">@abstractmethod</span>
+    <span class="tok-kw">def</span> <span class="tok-type">calcular_compatibilidade</span>(
+        self, perfil_desejado: PerfilDesejado
+    ) -> <span class="tok-type">float</span>:
+        <span class="tok-str">"""Cada subclasse implementa sua
+        própria penalidade de acabamento."""</span>
+        <span class="tok-kw">raise</span> NotImplementedError</code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>Produto.java</div>
+        <pre><code><span class="tok-kw">public abstract class</span> <span class="tok-type">Produto</span> {
+
+    <span class="tok-com">// ... atributos privados ...</span>
+
+    <span class="tok-com">/**
+     * Pilar: POLIMORFISMO na chamada,
+     * ABSTRAÇÃO na definição do contrato.
+     */</span>
+    <span class="tok-kw">public abstract double</span> calcularCompatibilidade(
+        PerfilDesejado perfilDesejado);
+
+    <span class="tok-kw">protected double</span> calcularScoreBase(
+        PerfilDesejado perfilDesejado) { <span class="tok-com">/* ... */</span> }
+}</code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>produto.ts</div>
+        <pre><code><span class="tok-kw">export abstract class</span> <span class="tok-type">Produto</span> {
+  <span class="tok-com">// campos privados via # ...</span>
+
+  <span class="tok-com">/**
+   * Calcula compatibilidade (0-100).
+   * Cada subclasse decide a penalidade.
+   */</span>
+  <span class="tok-kw">abstract</span> calcularCompatibilidade(
+    perfilDesejado: PerfilDesejado
+  ): <span class="tok-type">number</span>;
+
+  <span class="tok-kw">protected</span> calcularScoreBase(
+    perfilDesejado: PerfilDesejado
+  ): <span class="tok-type">number</span> { <span class="tok-com">/* ... */</span> }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. ENCAPSULAMENTO -->
+  <section class="slide">
+    <p class="slide-rotulo">Pilar 2 de 4</p>
+    <h1>Encapsulamento</h1>
+    <h2 class="subtitulo">Atributos privados, acessados só por getter/setter — o setter de preço nunca deixa um valor negativo entrar no sistema, nas 3 linguagens.</h2>
+    <div class="grade-codigo">
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>produto.py</div>
+        <pre><code><span class="tok-kw">@property</span>
+<span class="tok-kw">def</span> <span class="tok-type">preco</span>(self) -> <span class="tok-type">float</span>:
+    <span class="tok-kw">return</span> self._preco
+
+<span class="tok-kw">@preco.setter</span>
+<span class="tok-kw">def</span> <span class="tok-type">preco</span>(self, valor: <span class="tok-type">float</span>) -> <span class="tok-type">None</span>:
+    <span class="tok-kw">if</span> valor < <span class="tok-num">0</span>:
+        <span class="tok-kw">raise</span> ValueError(
+            <span class="tok-str">"preco não pode ser negativo"</span>)
+    self._preco = valor</code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>Produto.java</div>
+        <pre><code><span class="tok-kw">private double</span> preco;
+
+<span class="tok-kw">public double</span> getPreco() {
+    <span class="tok-kw">return</span> preco;
+}
+
+<span class="tok-kw">public void</span> setPreco(<span class="tok-kw">double</span> preco) {
+    <span class="tok-kw">if</span> (preco < <span class="tok-num">0</span>) {
+        <span class="tok-kw">throw new</span> IllegalArgumentException(
+            <span class="tok-str">"Preço não pode ser negativo: "</span> + preco);
+    }
+    <span class="tok-kw">this</span>.preco = preco;
+}</code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>produto.ts</div>
+        <pre><code><span class="tok-kw">#preco</span>: <span class="tok-type">number</span> = <span class="tok-num">0</span>;
+
+<span class="tok-kw">get</span> preco(): <span class="tok-type">number</span> {
+  <span class="tok-kw">return</span> <span class="tok-kw">this</span>.#preco;
+}
+
+<span class="tok-kw">set</span> preco(valor: <span class="tok-type">number</span>) {
+  <span class="tok-kw">if</span> (valor < <span class="tok-num">0</span>) {
+    <span class="tok-kw">throw new</span> RangeError(
+      <span class="tok-str">"preco nao pode ser negativo"</span>);
+  }
+  <span class="tok-kw">this</span>.#preco = valor;
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. HERANÇA -->
+  <section class="slide">
+    <p class="slide-rotulo">Pilar 3 de 4</p>
+    <h1>Herança</h1>
+    <h2 class="subtitulo">BaseLiquida estende Produto: reaproveita marca, preço, subtom, acabamento e <code style="font-family:var(--fonte-mono)">calcularScoreBase</code>, e soma só o que é próprio dela — o FPS.</h2>
+    <div class="grade-codigo">
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>bases.py</div>
+        <pre><code><span class="tok-kw">class</span> <span class="tok-type">BaseLiquida</span>(<span class="tok-type">Produto</span>):
+    <span class="tok-str">"""Base líquida tradicional."""</span>
+
+    PESO_PENALIDADE_ACABAMENTO = <span class="tok-num">5</span>
+
+    <span class="tok-kw">def</span> <span class="tok-type">__init__</span>(self, marca, nome, preco, tom,
+                 subtom, acabamento, fps):
+        <span class="tok-kw">super</span>().__init__(
+            marca, nome, preco, tom,
+            subtom, acabamento)
+        self.fps = fps  <span class="tok-com"># passa pelo setter</span></code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>BaseLiquida.java</div>
+        <pre><code><span class="tok-kw">public class</span> <span class="tok-type">BaseLiquida</span> <span class="tok-kw">extends</span> <span class="tok-type">Produto</span> {
+
+    <span class="tok-kw">private static final double</span>
+        PESO_PENALIDADE_ACABAMENTO = <span class="tok-num">5.0</span>;
+
+    <span class="tok-kw">private int</span> fps;
+
+    <span class="tok-kw">public</span> BaseLiquida(<span class="tok-type">String</span> marca, <span class="tok-com">/* ... */</span>
+                        <span class="tok-kw">int</span> fps) {
+        <span class="tok-kw">super</span>(marca, nome, preco, tom,
+              subtom, acabamento);
+        setFps(fps);
+    }
+}</code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>bases.ts</div>
+        <pre><code><span class="tok-kw">export class</span> <span class="tok-type">BaseLiquida</span> <span class="tok-kw">extends</span> <span class="tok-type">Produto</span> {
+  <span class="tok-kw">static readonly</span> PESO_PENALIDADE_ACABAMENTO = <span class="tok-num">5</span>;
+
+  <span class="tok-kw">#fps</span>: <span class="tok-type">number</span> = <span class="tok-num">0</span>;
+
+  <span class="tok-kw">constructor</span>(marca, nome, preco, tom,
+              subtom, acabamento, fps) {
+    <span class="tok-kw">super</span>(marca, nome, preco, tom,
+          subtom, acabamento);
+    <span class="tok-kw">this</span>.fps = fps;
+  }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. POLIMORFISMO -->
+  <section class="slide">
+    <p class="slide-rotulo">Pilar 4 de 4</p>
+    <h1>Polimorfismo</h1>
+    <h2 class="subtitulo">Um único laço percorre o catálogo pelo tipo <code style="font-family:var(--fonte-mono)">Produto</code> e chama <code style="font-family:var(--fonte-mono)">calcularCompatibilidade</code> — sem <code style="font-family:var(--fonte-mono)">isinstance</code>/<code style="font-family:var(--fonte-mono)">instanceof</code>. Cada objeto resolve com sua própria implementação.</h2>
+    <div class="grade-codigo">
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>main.py</div>
+        <pre><code><span class="tok-kw">for</span> produto <span class="tok-kw">in</span> produtos:
+    <span class="tok-com"># cada `produto` executa a
+    # implementação da SUA classe,
+    # sem isinstance/if-else</span>
+    compatibilidade = (
+        produto.calcular_compatibilidade(
+            perfil_desejado))
+    resultados.append(
+        (produto, compatibilidade))</code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>Main.java</div>
+        <pre><code><span class="tok-kw">for</span> (<span class="tok-type">Produto</span> produto : ranking) {
+    <span class="tok-com">// a JVM decide sozinha se quem
+    // responde é BaseLiquida,
+    // BaseCushion ou BaseMousse</span>
+    <span class="tok-kw">double</span> percentual =
+        produto.calcularCompatibilidade(
+            perfilDesejado);
+}</code></pre>
+      </div>
+      <div class="bloco-codigo">
+        <div class="cabecalho-codigo"><span class="ponto"></span>main.ts</div>
+        <pre><code><span class="tok-kw">for</span> (<span class="tok-kw">const</span> produto <span class="tok-kw">of</span> catalogo) {
+  <span class="tok-com">// nenhum `instanceof` aqui</span>
+  <span class="tok-kw">const</span> percentual =
+    produto.calcularCompatibilidade(
+      perfilDesejado);
+  resultados.push({ produto, percentual });
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FÓRMULA -->
+  <section class="slide">
+    <p class="slide-rotulo">Como funciona</p>
+    <h1>Fórmula de compatibilidade</h1>
+    <p class="explicacao">A distância entre o subtom do produto e o subtom desejado (escala 0–3: frio, neutro, oliva, quente) vira um score base de 0 a 100. Depois, se o acabamento não bate com o desejado, uma penalidade é descontada — e o peso dessa penalidade muda conforme a subclasse.</p>
+    <div class="duas-colunas">
+      <div class="caixa-formula">distancia = |subtom_produto - subtom_desejado|
+scoreBase = 100 * (1 - distancia / 3)
+
+se acabamento != acabamento_desejado:
+    scoreFinal = max(0, scoreBase - penalidade)
+senão:
+    scoreFinal = scoreBase</div>
+      <div>
+        <div class="tabela-penalidade">
+          <div class="chip-penalidade"><strong>5</strong>BaseLiquida</div>
+          <div class="chip-penalidade"><strong>10</strong>BaseMousse</div>
+          <div class="chip-penalidade"><strong>15</strong>BaseCushion</div>
+        </div>
+        <p class="explicacao" style="margin-top:1.4rem; font-size:0.95rem;">Formatos mais rígidos (cushion) penalizam mais um acabamento incompatível; formatos mais versáteis (líquida) penalizam menos — refletindo como cada tecnologia se comporta na pele.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. EXECUÇÃO AO VIVO -->
+  <section class="slide">
+    <p class="slide-rotulo">Prova real</p>
+    <h1>Execução ao vivo</h1>
+    <div class="painel-execucao">
+      <div class="botoes-execucao">
+        <button class="botao-executar" data-linguagem="python">Rodar Python</button>
+        <button class="botao-executar" data-linguagem="java">Rodar Java</button>
+        <button class="botao-executar" data-linguagem="typescript">Rodar TypeScript</button>
+        <button class="botao-executar destaque" data-linguagem="todas">Rodar todas</button>
+      </div>
+      <div class="status-execucao" id="statusExecucao"></div>
+      <div class="terminal" id="terminalSaida">
+        <span class="aviso-offline">Clique em um dos botões acima para rodar demo + testes de verdade e ver o output aqui.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. PRÓXIMOS PASSOS -->
+  <section class="slide">
+    <p class="slide-rotulo">Depois do 21/09</p>
+    <h1>Próximos passos</h1>
+    <ul class="bullets">
+      <li><strong>MVP:</strong> transformar este modelo de domínio (Produto, subclasses, compatibilidade) num backend real, com catálogo persistido.</li>
+      <li><strong>Subtom e quiz:</strong> fluxo de descoberta do subtom/tom da usuária, incluindo o caso especial de pele oliva.</li>
+      <li><strong>Onde comprar no Brasil, avaliações e comunidade:</strong> integrar lojas nacionais, reviews de usuárias reais e um espaço de troca de experiências.</li>
+    </ul>
+    <p class="explicacao" style="margin-top:1rem; color:var(--cor-texto-suave); font-style:italic;">O código apresentado aqui não é descartável — é a fundação sobre a qual o TomCerto real vai ser construído.</p>
+  </section>
+
+</div>
+
+<div class="rodape-nav">
+  <button class="botao-nav" id="botaoAnterior">&lsaquo; Anterior</button>
+  <span class="contador-slide" id="contadorSlide">1 / 10</span>
+  <button class="botao-nav" id="botaoProximo">Próximo &rsaquo;</button>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var total = slides.length;
+  var indiceAtual = 0;
+
+  var botaoAnterior = document.getElementById("botaoAnterior");
+  var botaoProximo = document.getElementById("botaoProximo");
+  var contadorSlide = document.getElementById("contadorSlide");
+
+  function irParaSlide(indice) {
+    if (indice < 0 || indice >= total) return;
+    slides[indiceAtual].classList.remove("ativo");
+    indiceAtual = indice;
+    slides[indiceAtual].classList.add("ativo");
+    contadorSlide.textContent = (indiceAtual + 1) + " / " + total;
+    botaoAnterior.disabled = indiceAtual === 0;
+    botaoProximo.disabled = indiceAtual === total - 1;
+  }
+
+  botaoAnterior.addEventListener("click", function () {
+    irParaSlide(indiceAtual - 1);
+  });
+
+  botaoProximo.addEventListener("click", function () {
+    irParaSlide(indiceAtual + 1);
+  });
+
+  document.addEventListener("keydown", function (evento) {
+    if (evento.key === "ArrowRight" || evento.key === "PageDown") {
+      irParaSlide(indiceAtual + 1);
+    } else if (evento.key === "ArrowLeft" || evento.key === "PageUp") {
+      irParaSlide(indiceAtual - 1);
+    }
+  });
+
+  irParaSlide(0);
+
+  // ---------- Execução ao vivo ----------
+
+  var NOMES_LINGUAGEM = {
+    python: "Python",
+    java: "Java",
+    typescript: "TypeScript",
+    todas: "todas as linguagens"
+  };
+
+  var botoesExecutar = Array.prototype.slice.call(document.querySelectorAll(".botao-executar"));
+  var statusExecucao = document.getElementById("statusExecucao");
+  var terminalSaida = document.getElementById("terminalSaida");
+
+  function escaparHtml(texto) {
+    var div = document.createElement("div");
+    div.textContent = texto == null ? "" : String(texto);
+    return div.innerHTML;
+  }
+
+  function definirBotoesDesabilitados(desabilitado) {
+    botoesExecutar.forEach(function (botao) {
+      botao.disabled = desabilitado;
+    });
+  }
+
+  function renderizarResultados(resultados) {
+    var partes = resultados.map(function (resultado) {
+      var pilulaClasse = resultado.sucesso ? "ok" : "falha";
+      var pilulaTexto = resultado.sucesso ? "sucesso" : "falha";
+      var saida = resultado.stdout || "";
+      var erro = resultado.stderr || "";
+      var corpo = escaparHtml(saida);
+      if (erro && erro.trim().length > 0) {
+        corpo += "\n" + escaparHtml(erro);
+      }
+      if (corpo.trim().length === 0) {
+        corpo = "(sem saída)";
+      }
+      return (
+        '<div class="bloco-resultado">' +
+        '<div class="titulo-resultado">' +
+        escaparHtml(NOMES_LINGUAGEM[resultado.linguagem] || resultado.linguagem) +
+        " — " + escaparHtml(resultado.comando || "") +
+        ' <span class="pilula ' + pilulaClasse + '">' + pilulaTexto +
+        " (" + escaparHtml(resultado.duracaoMs != null ? resultado.duracaoMs : "?") + "ms)</span>" +
+        "</div>" +
+        "<div>" + corpo + "</div>" +
+        "</div>"
+      );
+    });
+    terminalSaida.innerHTML = partes.join("");
+  }
+
+  function mostrarErroOffline() {
+    terminalSaida.innerHTML =
+      '<span class="aviso-offline">Não foi possível conectar ao painel local. ' +
+      "Inicie o painel local com <code>node painel/server.mjs</code> para rodar ao vivo.</span>";
+  }
+
+  botoesExecutar.forEach(function (botao) {
+    botao.addEventListener("click", function () {
+      var linguagem = botao.getAttribute("data-linguagem");
+      statusExecucao.textContent =
+        "Rodando " + (NOMES_LINGUAGEM[linguagem] || linguagem) + "...";
+      terminalSaida.innerHTML =
+        '<span class="aviso-offline">Executando demo + testes, aguarde...</span>';
+      definirBotoesDesabilitados(true);
+
+      fetch("/api/executar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ linguagem: linguagem, etapa: "tudo" })
+      })
+        .then(function (resposta) {
+          if (!resposta.ok) {
+            throw new Error("resposta HTTP " + resposta.status);
+          }
+          return resposta.json();
+        })
+        .then(function (dados) {
+          var resultados = (dados && dados.resultados) || [];
+          if (resultados.length === 0) {
+            statusExecucao.textContent = "Nenhum resultado retornado.";
+            terminalSaida.innerHTML =
+              '<span class="aviso-offline">O servidor não retornou resultados.</span>';
+            return;
+          }
+          var totalOk = resultados.filter(function (r) { return r.sucesso; }).length;
+          statusExecucao.textContent =
+            totalOk + " / " + resultados.length + " execuções com sucesso";
+          renderizarResultados(resultados);
+        })
+        .catch(function () {
+          statusExecucao.textContent = "";
+          mostrarErroOffline();
+        })
+        .finally(function () {
+          definirBotoesDesabilitados(false);
+        });
+    });
+  });
+})();
+</script>
+</body>
+</html>

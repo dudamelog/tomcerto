@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TomCerto — painel de execução</title>
+  <link rel="stylesheet" href="estilo.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="cabecalho">
+      <div class="cabecalho-titulos">
+        <div class="selo">Painel de execução</div>
+        <h1 id="titulo-projeto">TomCerto</h1>
+        <p id="subtitulo-projeto">Carregando informações do projeto…</p>
+      </div>
+      <div class="cabecalho-acoes">
+        <button id="btn-rodar-tudo" class="botao-principal" disabled>Rodar tudo</button>
+        <span id="status-conexao" class="status-conexao">
+          <span class="ponto"></span>
+          <span>verificando conexão…</span>
+        </span>
+      </div>
+    </header>
+
+    <div id="aviso-erro" class="aviso-erro" hidden>
+      <strong>Não foi possível conectar ao painel</strong>
+      Confirme que o servidor está rodando com <code>node painel/server.mjs</code> e recarregue esta página.
+    </div>
+
+    <main id="grid-cartoes" class="grid-cartoes">
+      <!-- Cartões de linguagem são montados via JS a partir de /api/manifest -->
+    </main>
+
+    <footer class="rodape">
+      <p>TomCerto — estudo de caso de Paradigmas de Linguagens de Programação (POO em Python, Java e TypeScript).</p>
+      <p><a href="/slides.html">Ver apresentação</a></p>
+    </footer>
+  </div>
+
+  <script src="painel.js"></script>
+</body>
+</html>

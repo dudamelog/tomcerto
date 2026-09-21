@@ -1,0 +1,102 @@
+{
+  "projeto": "TomCerto",
+  "subtitulo": "4 pilares de POO em 3 linguagens — entrega 21/09",
+  "linguagens": [
+    {
+      "id": "python",
+      "nome": "Python",
+      "cwd": "entrega-21-09/python",
+      "comandos": {
+        "demo": "python3 main.py",
+        "testes": "python3 -m unittest test_bases.py -v"
+      },
+      "arquivos": ["produto.py", "bases.py", "main.py", "test_bases.py"],
+      "pilares": [
+        {
+          "pilar": "Abstração",
+          "local": "produto.py",
+          "detalhe": "classe Produto(ABC) e método abstrato calcular_compatibilidade"
+        },
+        {
+          "pilar": "Encapsulamento",
+          "local": "produto.py / bases.py",
+          "detalhe": "atributos privados _preco, _subtom, _acabamento, _fps, _numero_esponjas, _percentual_aeracao com @property/setters validando (ValueError/TypeError)"
+        },
+        {
+          "pilar": "Herança",
+          "local": "bases.py",
+          "detalhe": "BaseLiquida, BaseCushion, BaseMousse herdam de Produto e reaproveitam _calcular_score_base"
+        },
+        {
+          "pilar": "Polimorfismo",
+          "local": "main.py",
+          "detalhe": "laço único chamando produto.calcular_compatibilidade(perfil) sobre list[Produto], sem isinstance; cada subclasse aplica seu próprio peso de penalidade (5/15/10)"
+        }
+      ]
+    },
+    {
+      "id": "java",
+      "nome": "Java",
+      "cwd": "entrega-21-09/java",
+      "comandos": {
+        "demo": "javac *.java && java Main",
+        "testes": "javac *.java && java TesteBases"
+      },
+      "arquivos": ["Produto.java", "Subtom.java", "Acabamento.java", "PerfilDesejado.java", "BaseLiquida.java", "BaseCushion.java", "BaseMousse.java", "Main.java", "TesteBases.java"],
+      "pilares": [
+        {
+          "pilar": "Abstração",
+          "local": "Produto.java",
+          "detalhe": "classe abstrata com o método abstrato calcularCompatibilidade e o método protegido calcularScoreBase, reaproveitado por todas as subclasses"
+        },
+        {
+          "pilar": "Encapsulamento",
+          "local": "Produto.java / BaseLiquida.java / BaseCushion.java / BaseMousse.java",
+          "detalhe": "atributos private acessados por getters/setters; setPreco valida preço negativo; setFps, setNumeroEsponjas e setPercentualAeracao validam seus próprios limites"
+        },
+        {
+          "pilar": "Herança",
+          "local": "BaseLiquida.java, BaseCushion.java, BaseMousse.java",
+          "detalhe": "estendem Produto, herdando atributos comuns e o cálculo de score base, acrescentando só o atributo específico de cada formato"
+        },
+        {
+          "pilar": "Polimorfismo",
+          "local": "Main.java",
+          "detalhe": "laço for (Produto produto : ranking) chamando produto.calcularCompatibilidade(perfilDesejado) sem nenhum instanceof"
+        }
+      ]
+    },
+    {
+      "id": "typescript",
+      "nome": "TypeScript",
+      "cwd": "entrega-21-09/typescript",
+      "comandos": {
+        "demo": "npx --yes -p typescript tsc && node main.js",
+        "testes": "npx --yes -p typescript tsc && node teste.js"
+      },
+      "arquivos": ["produto.ts", "bases.ts", "main.ts", "teste.ts", "tsconfig.json"],
+      "pilares": [
+        {
+          "pilar": "Abstração",
+          "local": "produto.ts",
+          "detalhe": "classe abstrata Produto (abstract calcularCompatibilidade), define o contrato comum a toda base de maquiagem"
+        },
+        {
+          "pilar": "Encapsulamento",
+          "local": "produto.ts / bases.ts",
+          "detalhe": "campos privados nativos (#preco, #marca, #fps, #numeroEsponjas, #percentualAeracao) com getters/setters lançando RangeError se inválidos"
+        },
+        {
+          "pilar": "Herança",
+          "local": "bases.ts",
+          "detalhe": "BaseLiquida, BaseCushion e BaseMousse estendem Produto e reaproveitam calcularScoreBase"
+        },
+        {
+          "pilar": "Polimorfismo",
+          "local": "main.ts",
+          "detalhe": "laço sobre Produto[] chamando produto.calcularCompatibilidade(perfil) sem nenhum instanceof; cada subclasse responde com sua própria penalidade de acabamento (pesos 5, 15 e 10)"
+        }
+      ]
+    }
+  ]
+}
